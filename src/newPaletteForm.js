@@ -94,21 +94,33 @@ class NewPaletteForm extends React.Component {
     this.state = {
       open: true,
       currentColor: "teal",
-      newName: "",
+      newColorName: "",
       colors: [{ color: "blue", name: "blue" }],
+      newPaletteName: "",
     };
     this.updateCurrentColor = this.updateCurrentColor.bind(this);
     this.addNewColor = this.addNewColor.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     ValidatorForm.addValidationRule("isColorNameUnique", (value) =>
       this.state.colors.every(
-        ({ name }) => name.toLowerCase() !== value.toLowerCase
+        ({ name }) => name.toLowerCase() !== value.toLowerCase()
+      )
+    );
+    ValidatorForm.addValidationRule("isColorUnique", (value) =>
+      this.state.colors.every(({ color }) => color !== this.state.currentColor)
+    );
+    ValidatorForm.addValidationRule("isPaletteNameUnique", (value) =>
+      this.props.palettes.every(
+        ({ paletteName }) => paletteName.toLowerCase() !== value.toLowerCase()
       )
     );
   }
+
+  
 
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -124,22 +136,38 @@ class NewPaletteForm extends React.Component {
   addNewColor() {
     const newColor = {
       color: this.state.currentColor,
-      name: this.state.newName,
+      name: this.state.newColorName,
     };
-    this.setState({ colors: [...this.state.colors, newColor] });
+    this.setState({
+      colors: [...this.state.colors, newColor],
+      newColorName: "",
+    });
   }
 
   handleChange(evt) {
-    this.setState({ newName: evt.target.value });
+    this.setState({ [evt.target.name]: evt.target.value });
+  }
+
+  handleSubmit() {
+    let newColorName = this.state.newPaletteName;
+    const newPalette = {
+      paletteName: newColorName,
+      id: newColorName.toLowerCase().replace(/ /g, "-"),
+      colors: this.state.colors,
+    };
+    this.props.savePalette(newPalette);
+    this.props.history.push("/");
   }
 
   render() {
+    console.log(this.props.palettes)
     const { classes, theme } = this.props;
     const { open, colors } = this.state;
     return (
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
+          color="default"
           position="fixed"
           className={classNames(classes.appBar, {
             [classes.appBarShift]: open,
@@ -157,6 +185,22 @@ class NewPaletteForm extends React.Component {
             <Typography variant="h6" color="inherit" noWrap>
               Persistent Drawer
             </Typography>
+            <ValidatorForm onSubmit={this.handleSubmit}>
+              <TextValidator
+                label="Palette Name"
+                name="newPaletteName"
+                value={this.state.newPaletteName}
+                onChange={this.handleChange}
+                validators={["required", "isPaletteNameUnique"]}
+                errorMessages={[
+                  "Enter a Palette name",
+                  "Color name must be unique",
+                ]}
+              />
+              <Button variant="contained" color="primary" type="submit">
+                Save Palette
+              </Button>
+            </ValidatorForm>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -175,11 +219,9 @@ class NewPaletteForm extends React.Component {
           <Typography variant="h4"> Design Your Palette </Typography>
           <div>
             <Button variant="contained" color="secondary">
-              {" "}
               Clear Palette
             </Button>
             <Button variant="contained" color="primary">
-              {" "}
               Randor Color
             </Button>
           </div>
@@ -191,10 +233,15 @@ class NewPaletteForm extends React.Component {
 
           <ValidatorForm onSubmit={this.addNewColor}>
             <TextValidator
-              value={this.state.newName}
+              value={this.state.newColorName}
               onChange={this.handleChange}
-              validators={['required', 'isColorNameUnique']}
-              errorMessages={['this field is required', 'Color Name must be unique']}
+              name="newColorName"
+              validators={["required", "isColorNameUnique", "isColorUnique"]}
+              errorMessages={[
+                "Enter a color name",
+                "Color name must be unique",
+                "Color already used!",
+              ]}
             />
 
             <Button
