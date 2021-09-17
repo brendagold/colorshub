@@ -18,25 +18,7 @@ const styles = (theme) => ({
   root: {
     display: "flex",
   },
-  appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
 
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 20,
-  },
   hide: {
     display: "none",
   },
@@ -75,6 +57,20 @@ const styles = (theme) => ({
     }),
     marginLeft: 0,
   },
+  container: {
+    width: "90%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%"
+  },
+  buttons: {
+    width: "100%"
+  }, 
+  button: {
+    width: "50%"
+  },
 });
 
 class NewPaletteForm extends React.Component {
@@ -88,7 +84,6 @@ class NewPaletteForm extends React.Component {
       colors: this.props.palettes[0].colors,
       newPaletteName: "",
     };
-   
 
     this.addNewColor = this.addNewColor.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -98,7 +93,6 @@ class NewPaletteForm extends React.Component {
     this.clearColors = this.clearColors.bind(this);
   }
 
-
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };
@@ -106,9 +100,7 @@ class NewPaletteForm extends React.Component {
     this.setState({ open: false });
   };
 
-
   addNewColor(newColor) {
-    
     this.setState({
       colors: [...this.state.colors, newColor],
       newColorName: "",
@@ -158,8 +150,7 @@ class NewPaletteForm extends React.Component {
     return (
       <div className={classes.root}>
         <PaletteFormNav
-          open={open}
-          classes={classes}
+          open={open}s
           palettes={palettes}
           handleSubmit={this.handleSubmit}
           handleDrawerOpen={this.handleDrawerOpen}
@@ -177,12 +168,14 @@ class NewPaletteForm extends React.Component {
             </IconButton>
           </div>
           <Divider />
-          <Typography variant="h4"> Design Your Palette </Typography>
-          <div>
+          <div className={classes.container}>
+          <Typography variant="h4" gutterBottom> Design Your Palette </Typography>
+          <div className={classes.buttons}>
             <Button
               variant="contained"
               color="secondary"
               onClick={this.clearColors}
+              className={classes.button}
             >
               Clear Palette
             </Button>
@@ -191,11 +184,17 @@ class NewPaletteForm extends React.Component {
               color="primary"
               disabled={paletteIsFull}
               onClick={this.addRandomColor}
+              className={classes.button}
             >
               Randor Color
             </Button>
           </div>
-          <ColorPickerForm paletteIsFull={paletteIsFull} addNewColor={this.addNewColor}  colors={colors} />
+          <ColorPickerForm
+            paletteIsFull={paletteIsFull}
+            addNewColor={this.addNewColor}
+            colors={colors}
+          />
+          </div>
         </Drawer>
         <main
           className={classNames(classes.content, {
