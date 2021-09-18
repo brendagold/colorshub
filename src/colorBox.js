@@ -36,7 +36,7 @@ class ColorBox extends Component {
               copied && classes.showMessage
             }`}
           >
-            <h1>Copied!!!</h1>
+            <h1>Copied!</h1>
             <p className={classes.copyText}>{background}</p>
           </div>
           <div className="copy-container">
