@@ -7,14 +7,19 @@ class MiniPalette extends React.Component {
   constructor(props) {
     super(props)
     this.deletePalette = this.deletePalette.bind(this)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   deletePalette(e) {
     e.stopPropagation()
     this.props.openDialog(this.props.id)
   }
+
+  handleClick() {
+    this.props.goToPalette(this.props.id)
+  }
   render(){
-  const { classes, emoji, paletteName, colors, handleClick } = this.props;
+  const { classes, emoji, paletteName, colors, handleClick, id } = this.props;
 
   const miniColorBoxes = colors.map((color) => (
     <div
@@ -24,7 +29,7 @@ class MiniPalette extends React.Component {
     ></div>
   ));
   return (
-    <div className={classes.root} onClick={handleClick}>
+    <div className={classes.root} onClick={this.handleClick}>
       
         <DeleteIcon className={classes.deleteIcon} onClick={this.deletePalette} style={{ transition: "all 0.3s ease-in-out"}} />
       
