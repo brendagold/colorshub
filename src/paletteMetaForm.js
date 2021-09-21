@@ -50,6 +50,7 @@ class PaletteMetaForm extends React.Component {
       emoji: emoji.native,
     };
     this.props.handleSubmit(newPalette);
+    this.setState({ stage: "" });
   }
 
   render() {
@@ -58,7 +59,7 @@ class PaletteMetaForm extends React.Component {
     return (
       <div>
         <Dialog open={this.state.stage === "emoji"} onClose={hideForm}>
-        <DialogTitle>Pick a Palette Emoji</DialogTitle>
+          <DialogTitle>Pick a Palette Emoji</DialogTitle>
           <Picker title="pick an Emoji" onSelect={this.savePalette} />
         </Dialog>
         <Dialog open={this.state.stage === "form"} onClose={hideForm}>
