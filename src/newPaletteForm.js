@@ -93,7 +93,7 @@ class NewPaletteForm extends React.Component {
     return (
       <div className={classes.root}>
         <PaletteFormNav
-          open={open}s
+          open={open}
           palettes={palettes}
           handleSubmit={this.handleSubmit}
           handleDrawerOpen={this.handleDrawerOpen}
